@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
-#include "core/Game.hpp"
+#include "Game.hpp"
 #include "core/ResourceManager.hpp"
 
 class Engine

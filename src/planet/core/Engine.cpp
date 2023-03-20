@@ -17,6 +17,8 @@ void Engine::stop()
 
 void Engine::start()
 {
+    m_game.init();
+    
     sf::Clock clock;
     float accumulator = 0.f;
 

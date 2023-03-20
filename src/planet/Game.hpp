@@ -24,7 +24,7 @@ private:
     void handleEvents();
 
     Engine& m_engineRef;
-    sf::RenderWindow& m_window;
+    sf::RenderWindow& m_windowRef;
 
     SystemManager m_systemManager;
 };
