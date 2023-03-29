@@ -13,6 +13,7 @@ void RenderSystem::onUpdate(float _dt)
     for(auto &&[entity, transform, renderable] : m_registryRef->view<Transform, Renderable>().each())
     {
         renderable.sprite.setPosition(transform.position);
+        renderable.sprite.setRotation(transform.rotation);
         m_windowRef.draw(renderable.sprite);
     }
 }

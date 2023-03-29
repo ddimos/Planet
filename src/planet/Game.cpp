@@ -10,6 +10,8 @@
 
 #include "systems/RenderSystem.hpp"
 #include "systems/PlayerSystem.hpp"
+#include "systems/InteractableWithPlanetSystem.hpp"
+#include "systems/PhysicsSystem.hpp"
 
 Game::Game(Engine& _engineRef)
     : m_engineRef(_engineRef)
@@ -26,6 +28,8 @@ void Game::init()
     resourceManager.loadTexture("res/textures/player_front.png", "player_front");
 
     m_systemManager.addSystem(std::make_unique<PlayerSystem>());
+    m_systemManager.addSystem(std::make_unique<InteractableWithPlanetSystem>());
+    m_systemManager.addSystem(std::make_unique<PhysicsSystem>());
 
     m_systemManager.addRenderSystem(std::make_unique<RenderSystem>(m_windowRef));
 
@@ -34,18 +38,31 @@ void Game::init()
     auto& registry = m_systemManager.getRegistry();
 
     auto planet = registry.create();
-    auto& transform = registry.emplace<Transform>(planet);
-    transform.position = sf::Vector2f(0.f, 284.f);
-    auto& renderable = registry.emplace<Renderable>(planet);
-    renderable.sprite.setTexture(resourceManager.getTexture("earth"));
-    renderable.sprite.setPosition(transform.position);
+    {
+        auto& transform = registry.emplace<Transform>(planet);
+        transform.position = sf::Vector2f(600.f, 484.f);
+        auto& renderable = registry.emplace<Renderable>(planet);
+        renderable.sprite.setTexture(resourceManager.getTexture("earth"));
+        renderable.sprite.setPosition(transform.position);
+        renderable.sprite.setOrigin(renderable.sprite.getLocalBounds().width / 2.f, renderable.sprite.getLocalBounds().height / 2.f);
+        auto& collidable = registry.emplace<Collidable>(planet);
+        collidable.radius = renderable.sprite.getLocalBounds().width / 2.f;
+    }
     {
         auto player = registry.create();
-        registry.emplace<Player>(player);
+        auto& playerComponent = registry.emplace<Player>(player);
+        playerComponent.speed = 10.f;
+        registry.emplace<Body>(player);
         registry.emplace<Transform>(player);
         auto& renderable = registry.emplace<Renderable>(player);
         renderable.sprite.setTexture(resourceManager.getTexture("player_front"));
         renderable.sprite.setPosition(sf::Vector2f(0.f, 0.f));
+        renderable.sprite.setOrigin(renderable.sprite.getLocalBounds().width / 2.f, renderable.sprite.getLocalBounds().height / 2.f);
+        auto& collidable = registry.emplace<Collidable>(player);
+        collidable.radius = renderable.sprite.getLocalBounds().height / 2.f;
+        auto& interactableWithPlanet = registry.emplace<InteractableWithPlanet>(player);
+        interactableWithPlanet.planet = planet;
+        interactableWithPlanet.gravityKoef = 50000000.f;
     }
     {
         auto background = registry.create();

@@ -6,7 +6,7 @@
 struct Transform
 {
     sf::Vector2f position = sf::Vector2f{0.f, 0.f};
-    sf::Vector2f rotation = sf::Vector2f{0.f, 0.f};
+    float rotation = 0.f;
     float scale = 1.f;
 };
 
@@ -17,10 +17,22 @@ struct Renderable
 
 struct Player
 {
+    float speed = 0.f;
 };
 
-struct Motion
+struct Body
 {
     sf::Vector2f velocity;
-    sf::Vector2f acceleration;
+    sf::Vector2f force;
+};
+
+struct Collidable
+{
+    float radius = 0.f;
+};
+
+struct InteractableWithPlanet
+{
+    entt::entity planet;
+    float gravityKoef = 0.f;
 };
