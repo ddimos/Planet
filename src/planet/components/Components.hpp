@@ -33,6 +33,6 @@ struct Collidable
 
 struct InteractableWithPlanet
 {
-    entt::entity planet;
+    entt::entity planet = entt::null;
     float gravityKoef = 0.f;
 };

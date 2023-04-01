@@ -51,7 +51,7 @@ void Game::init()
     {
         auto player = registry.create();
         auto& playerComponent = registry.emplace<Player>(player);
-        playerComponent.speed = 10.f;
+        playerComponent.speed = 5.f;
         registry.emplace<Body>(player);
         registry.emplace<Transform>(player);
         auto& renderable = registry.emplace<Renderable>(player);
@@ -76,8 +76,8 @@ void Game::init()
 void Game::update()
 {
     handleEvents();
-
 }
+
 void Game::fixedUpdate(float _dt)
 {
     m_systemManager.update(_dt);

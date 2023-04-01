@@ -22,5 +22,10 @@ inline float dotProduct(const sf::Vector2f& _v1, const sf::Vector2f& _v2)
     return _v1.x * _v2.x + _v1.y * _v2.y;
 }
 
+inline sf::Vector2f tangentVector(const sf::Vector2f _v)
+{
+    return sf::Vector2f{-_v.y, _v.x};
+}
+
 float angleBetweenVectors(const sf::Vector2f& _vec1, const sf::Vector2f& _vec2);
 sf::Vector2f normalizedVector(const sf::Vector2f _v);
