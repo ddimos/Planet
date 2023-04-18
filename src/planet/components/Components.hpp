@@ -18,6 +18,7 @@ struct Renderable
 struct Player
 {
     float speed = 0.f;
+    float cooldownS = 0.f;
 };
 
 struct Body
@@ -35,4 +36,9 @@ struct InteractableWithPlanet
 {
     entt::entity planet = entt::null;
     float gravityKoef = 0.f;
+};
+
+struct Bullet
+{
+    float lifetimeS = 0.f;
 };

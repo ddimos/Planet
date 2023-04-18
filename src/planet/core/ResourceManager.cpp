@@ -9,6 +9,7 @@ void ResourceManager::loadTexture(std::string _path, std::string _name)
         LOG_ERROR("Couldn't load a texture " + _path);
         return;
     }
+    texture.setSmooth(true); // Not sure if it's supposed to be here
     m_textures.insert_or_assign(_name, texture);
 }
 
@@ -25,7 +26,7 @@ void ResourceManager::loadFont(std::string _path, std::string _name)
 
 const sf::Texture& ResourceManager::getTexture(std::string _name)
 {
-    auto it = m_textures.find(_name.data());
+    auto it = m_textures.find(_name);
     if (it != m_textures.end())
         return it->second;
 

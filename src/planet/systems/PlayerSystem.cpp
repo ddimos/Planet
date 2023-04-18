@@ -1,5 +1,6 @@
 #include "systems/PlayerSystem.hpp"
 #include "components/Components.hpp"
+#include "events/Events.hpp"
 #include "core/Utils.hpp"
 #include <SFML/Window/Keyboard.hpp>
 
@@ -35,5 +36,15 @@ void PlayerSystem::onUpdate(float _dt)
         body.velocity += player.speed * deltaPos.x * tangentVec;
         // TODO implement the Y movement
         // body.velocity += player.speedY * deltaPos.y * normalVec;
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+        {
+            if (player.cooldownS <= 0.f)
+            {
+                player.cooldownS = 1.f;
+                m_dispatcherRef->trigger<ShootEvent>({transform.position, normalVec});
+            }
+        }
+        player.cooldownS -= _dt;
     }
 }

@@ -1,5 +1,6 @@
 #include "systems/PhysicsSystem.hpp"
 #include "components/Components.hpp"
+#include "events/Events.hpp"
 #include "core/Utils.hpp"
 
 namespace
@@ -146,7 +147,10 @@ void PhysicsSystem::onUpdate(float _dt)
             CollisionPair pair(entityA, collidableA, transformA, bodyA, entityB, collidableB, transformB, bodyB);
             if (!pair.isCollide())
                 break;
-            
+
+            // TODO add a way to trigger an event only for specified types of entities
+            m_dispatcherRef->trigger<CollisionEvent>({entityA, entityB});
+
             collidingPairs.push_back(pair);
         }
     }   

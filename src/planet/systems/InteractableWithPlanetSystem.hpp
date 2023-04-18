@@ -9,6 +9,4 @@ public:
 private:
     void onUpdate(float _dt) override;
 
-    const float m_rotSpeed = 100.f;
-    const float m_rotThreshold = 1.f;
 };

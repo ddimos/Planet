@@ -12,6 +12,7 @@
 #include "systems/PlayerSystem.hpp"
 #include "systems/InteractableWithPlanetSystem.hpp"
 #include "systems/PhysicsSystem.hpp"
+#include "systems/BulletSystem.hpp"
 
 Game::Game(Engine& _engineRef)
     : m_engineRef(_engineRef)
@@ -26,10 +27,12 @@ void Game::init()
     resourceManager.loadTexture("res/textures/earth.png", "earth");
     resourceManager.loadTexture("res/textures/sky_stars.jpg", "sky_stars");
     resourceManager.loadTexture("res/textures/player_front.png", "player_front");
+    resourceManager.loadTexture("res/textures/01.png", "bullet");
 
     m_systemManager.addSystem(std::make_unique<PlayerSystem>());
     m_systemManager.addSystem(std::make_unique<InteractableWithPlanetSystem>());
     m_systemManager.addSystem(std::make_unique<PhysicsSystem>());
+    m_systemManager.addSystem(std::make_unique<BulletSystem>());
 
     m_systemManager.addRenderSystem(std::make_unique<RenderSystem>(m_windowRef));
 
@@ -63,13 +66,6 @@ void Game::init()
         auto& interactableWithPlanet = registry.emplace<InteractableWithPlanet>(player);
         interactableWithPlanet.planet = planet;
         interactableWithPlanet.gravityKoef = 50000000.f;
-    }
-    {
-        auto background = registry.create();
-        registry.emplace<Transform>(background);
-        auto& renderable = registry.emplace<Renderable>(background);
-        renderable.sprite.setTexture(resourceManager.getTexture("sky_stars"));
-        renderable.sprite.setPosition(sf::Vector2f(0.f, 0.f));
     }
 }
 
