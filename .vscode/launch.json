@@ -2,16 +2,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "C++ Debug (gdb)",
+            "name": "CMake Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/Planet",
-            "preLaunchTask": "Build C++ project",
+            "program": "${command:cmake.launchTargetPath}",
+            "preLaunchTask": "Build",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
-            "externalConsole": true,
+            "externalConsole": false,
             "MIMode": "gdb",
             "miDebuggerPath": "/usr/bin/gdb",
             "setupCommands": [
