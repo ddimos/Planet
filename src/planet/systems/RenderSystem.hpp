@@ -1,6 +1,8 @@
 #pragma once
 #include "systems/BaseSystem.hpp"
 #include <SFML/Graphics/Sprite.hpp> // for the background
+#include <SFML/Graphics/View.hpp>
+
 namespace sf
 {
     class RenderWindow;
@@ -17,4 +19,5 @@ private:
 
     sf::RenderWindow& m_windowRef;
     sf::Sprite m_background;
+    sf::View m_view;
 };

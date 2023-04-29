@@ -13,6 +13,7 @@
 #include "systems/InteractableWithPlanetSystem.hpp"
 #include "systems/PhysicsSystem.hpp"
 #include "systems/BulletSystem.hpp"
+#include "systems/CameraSystem.hpp"
 
 Game::Game(Engine& _engineRef)
     : m_engineRef(_engineRef)
@@ -33,6 +34,7 @@ void Game::init()
     m_systemManager.addSystem(std::make_unique<InteractableWithPlanetSystem>());
     m_systemManager.addSystem(std::make_unique<PhysicsSystem>());
     m_systemManager.addSystem(std::make_unique<BulletSystem>());
+    m_systemManager.addSystem(std::make_unique<CameraSystem>());
 
     m_systemManager.addRenderSystem(std::make_unique<RenderSystem>(m_windowRef));
 
@@ -51,8 +53,8 @@ void Game::init()
         auto& collidable = registry.emplace<Collidable>(planet);
         collidable.radius = renderable.sprite.getLocalBounds().width / 2.f;
     }
+    auto player = registry.create();
     {
-        auto player = registry.create();
         auto& playerComponent = registry.emplace<Player>(player);
         playerComponent.speed = 5.f;
         registry.emplace<Body>(player);
@@ -61,11 +63,20 @@ void Game::init()
         renderable.sprite.setTexture(resourceManager.getTexture("player_front"));
         renderable.sprite.setPosition(sf::Vector2f(0.f, 0.f));
         renderable.sprite.setOrigin(renderable.sprite.getLocalBounds().width / 2.f, renderable.sprite.getLocalBounds().height / 2.f);
+      //  renderable.sprite.setScale(0.1f, 0.1f);
         auto& collidable = registry.emplace<Collidable>(player);
-        collidable.radius = renderable.sprite.getLocalBounds().height / 2.f;
+        collidable.radius = renderable.sprite.getGlobalBounds().height / 2.f;
         auto& interactableWithPlanet = registry.emplace<InteractableWithPlanet>(player);
         interactableWithPlanet.planet = planet;
         interactableWithPlanet.gravityKoef = 50000000.f;
+    }
+    {
+        auto camera = registry.create();
+        registry.emplace<Transform>(camera);
+        auto& cameraComp = registry.emplace<Camera>(camera);
+        cameraComp.target = player;
+        cameraComp.size = sf::Vector2f{m_windowRef.getSize()};
+        cameraComp.offsetFromThePlanet = 200.f;
     }
 }
 

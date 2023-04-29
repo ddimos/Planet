@@ -42,3 +42,10 @@ struct Bullet
 {
     float lifetimeS = 0.f;
 };
+
+struct Camera
+{
+    entt::entity target = entt::null;
+    sf::Vector2f size = {};
+    float offsetFromThePlanet = 0.f;
+};
