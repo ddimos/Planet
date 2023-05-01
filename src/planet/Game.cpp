@@ -9,6 +9,8 @@
 #include "components/Components.hpp"
 #include "systems/Systems.hpp"
 
+#include "EntityType.hpp"
+
 Game::Game(Engine& _engineRef)
     : m_engineRef(_engineRef)
     , m_windowRef(_engineRef.getWindow())
@@ -29,7 +31,10 @@ void Game::init()
     m_systemManager.addSystem(std::make_unique<PlayerSystem>());
     m_systemManager.addSystem(std::make_unique<InteractableWithPlanetSystem>());
     m_systemManager.addSystem(std::make_unique<GravitySystem>());
-    m_systemManager.addSystem(std::make_unique<PhysicsSystem>());
+    {
+        PhysicsSystem::NotificationPairs notificationPairs{{EntityType::ASTEROID, EntityType::BULLET}};
+        m_systemManager.addSystem(std::make_unique<PhysicsSystem>(move(notificationPairs)));
+    }
     m_systemManager.addSystem(std::make_unique<BulletSystem>());
     m_systemManager.addSystem(std::make_unique<CameraSystem>());
     m_systemManager.addSystem(std::make_unique<AsteroidSystem>());
@@ -52,6 +57,8 @@ void Game::init()
          renderable.sprite.setOrigin(renderable.sprite.getLocalBounds().width / 2.f, renderable.sprite.getLocalBounds().height / 2.f);
         auto& collidable = registry.emplace<Collidable>(planet);
         collidable.radius = renderable.sprite.getGlobalBounds().width / 2.f;
+        collidable.typeFlag = EntityType::PLANET;
+        collidable.canColideWithFlags = EntityType::PLAYER | EntityType::BULLET | EntityType::ASTEROID;
     }
     auto player = registry.create();
     {
@@ -71,6 +78,8 @@ void Game::init()
         gravity.gravityKoef = 50000000.f;
         auto& interactableWithPlanet = registry.emplace<InteractableWithPlanet>(player);
         interactableWithPlanet.planet = planet;
+        collidable.typeFlag = EntityType::PLAYER;
+        collidable.canColideWithFlags = EntityType::PLANET | EntityType::ASTEROID;
     }
     {
         auto camera = registry.create();

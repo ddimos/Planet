@@ -6,6 +6,9 @@
 #include "core/Utils.hpp"
 #include "core/Log.hpp"
 #include "core/Random.h"
+
+#include "EntityType.hpp"
+
 #include <SFML/Window/Keyboard.hpp>
 
 AsteroidSystem::AsteroidSystem()
@@ -49,6 +52,8 @@ void AsteroidSystem::spawn()
     renderable.sprite.setScale(sf::Vector2f{0.2f, 0.2f});
     auto& collidable = m_registryRef->emplace<Collidable>(asteroid);
     collidable.radius = renderable.sprite.getGlobalBounds().height / 2.f;
+    collidable.typeFlag = EntityType::ASTEROID;
+    collidable.canColideWithFlags = EntityType::PLAYER | EntityType::BULLET | EntityType::ASTEROID | EntityType::PLANET;
     auto& gravity = m_registryRef->emplace<Gravity>(asteroid);
     gravity.planet = m_registryRef->ctx().get<entt::entity>();
     gravity.gravityKoef = 5000000.f;

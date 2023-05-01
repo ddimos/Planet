@@ -3,6 +3,7 @@
 #include "components/Components.hpp"
 #include "core/Engine.hpp"
 #include "core/Utils.hpp"
+#include "EntityType.hpp"
 
 void BulletSystem::onInit()
 {
@@ -38,6 +39,8 @@ void BulletSystem::receiveShootEvent(const ShootEvent& _event)
     renderable.sprite.setOrigin(renderable.sprite.getLocalBounds().width / 2.f, renderable.sprite.getLocalBounds().height / 2.f);
     auto& collidable = m_registryRef->emplace<Collidable>(bullet);
     collidable.radius = renderable.sprite.getGlobalBounds().height / 6.f;
+    collidable.typeFlag = EntityType::BULLET;
+    collidable.canColideWithFlags = EntityType::ASTEROID | EntityType::PLANET;
     // auto& interactableWithPlanet = m_registryRef->emplace<InteractableWithPlanet>(bullet);
     // interactableWithPlanet.planet = planet;
     // interactableWithPlanet.gravityKoef = 10000000.f;

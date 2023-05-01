@@ -15,9 +15,12 @@ namespace
             entt::entity _A, Collidable& _collidableA, Transform& _transformA, Body* _bodyA,
             entt::entity _B, Collidable& _collidableB, Transform& _transformB, Body* _bodyB);
 
+        bool canColide() const;
         bool isCollide();
         void resolveCollision();
         void correctPosition();
+
+        bool needToNotify(const PhysicsSystem::NotificationPairs& _pairs) const;
 
         sf::Vector2f getPositionA() { return m_transformA.position; }
         float        getRadiusA() { return m_collidableA.radius; }
@@ -51,6 +54,12 @@ namespace
         , m_transformB(_transformB)
         , m_bodyB(_bodyB)
     {
+    }
+
+    bool CollisionPair::canColide() const
+    {
+        return m_collidableA.canColideWithFlags & m_collidableB.typeFlag 
+            && m_collidableB.canColideWithFlags & m_collidableA.typeFlag;
     }
 
     bool CollisionPair::isCollide()
@@ -105,6 +114,19 @@ namespace
             m_transformB.position += correction;//A->invMass * correction;
     }
 
+    bool CollisionPair::needToNotify(const PhysicsSystem::NotificationPairs& _pairs) const
+    {
+        auto itA = _pairs.find(m_collidableA.typeFlag);
+        if (itA != _pairs.end())
+            return itA->second & m_collidableB.typeFlag;
+        
+        auto itB = _pairs.find(m_collidableB.typeFlag);
+        if (itB != _pairs.end())
+            return itB->second & m_collidableA.typeFlag;
+        
+        return false;
+    }
+
     bool circleVsCircle(CollisionPair & _pair)
     {
         sf::Vector2f fromAtoB = _pair.getPositionA() - _pair.getPositionB();
@@ -130,6 +152,11 @@ namespace
     }
 } // namespace
 
+PhysicsSystem::PhysicsSystem(NotificationPairs&& _notificationPairs)
+    : m_notificationPairs(move(_notificationPairs))
+{
+}
+
 void PhysicsSystem::onUpdate(float _dt)
 {
     std::vector<CollisionPair> collidingPairs;
@@ -150,21 +177,18 @@ void PhysicsSystem::onUpdate(float _dt)
             auto& collidableB = view.get<Collidable>(entityB);
             Body* bodyB = (m_registryRef->all_of<Body>(entityB)) ? &m_registryRef->get<Body>(entityB) : nullptr;
 
-            // TODO canColide
-            if (m_registryRef->all_of<Player>(entityA) || m_registryRef->all_of<Player>(entityB))
-                if (m_registryRef->all_of<Bullet>(entityA) || m_registryRef->all_of<Bullet>(entityB))
-                    continue;
-
             CollisionPair pair(entityA, collidableA, transformA, bodyA, entityB, collidableB, transformB, bodyB);
+            if (!pair.canColide())
+                continue;
             if (!pair.isCollide())
                 continue;
 
-            // TODO add a way to trigger an event only for specified types of entities
-            m_dispatcherRef->trigger<CollisionEvent>({entityA, entityB});
+            if (pair.needToNotify(m_notificationPairs))
+                m_dispatcherRef->trigger<CollisionEvent>({entityA, entityB});
 
             collidingPairs.push_back(pair);
         }
-    }  
+    }
 
     for (auto& pair : collidingPairs)
     {
