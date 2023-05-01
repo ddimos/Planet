@@ -21,11 +21,15 @@ void RenderSystem::onInit()
 
 void RenderSystem::onUpdate(float _dt)
 {
-    for(auto &&[entity, transform, camera] : m_registryRef->view<Transform, Camera>().each()) // should be only one camera
+    if (auto cameraView = m_registryRef->view<Transform, Camera>())
     {
-        m_view.setCenter(transform.position);
-        m_view.setRotation(transform.rotation);
-        m_view.setSize(camera.size);
+        if (cameraView.size_hint() > 0)
+        {
+            auto &&[transform, camera] = cameraView.get<Transform, Camera>(*cameraView.begin());
+            m_view.setCenter(transform.position);
+            m_view.setRotation(transform.rotation);
+            m_view.setSize(camera.size);
+        }
     }
 
     m_windowRef.setView(m_view);

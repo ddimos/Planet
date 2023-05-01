@@ -7,14 +7,7 @@
 #include "core/Log.hpp"
 
 #include "components/Components.hpp"
-
-#include "systems/RenderSystem.hpp"
-#include "systems/PlayerSystem.hpp"
-#include "systems/InteractableWithPlanetSystem.hpp"
-#include "systems/PhysicsSystem.hpp"
-#include "systems/BulletSystem.hpp"
-#include "systems/CameraSystem.hpp"
-#include "systems/AsteroidSystem.hpp"
+#include "systems/Systems.hpp"
 
 Game::Game(Engine& _engineRef)
     : m_engineRef(_engineRef)
@@ -41,6 +34,7 @@ void Game::init()
     m_systemManager.addSystem(std::make_unique<AsteroidSystem>());
 
     m_systemManager.addRenderSystem(std::make_unique<RenderSystem>(m_windowRef));
+    m_systemManager.addRenderSystem(std::make_unique<RenderDebugSystem>(m_windowRef));
 
     m_systemManager.init();
 
