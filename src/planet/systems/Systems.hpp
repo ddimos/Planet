@@ -3,6 +3,7 @@
 #include "systems/AsteroidSystem.hpp"
 #include "systems/BulletSystem.hpp"
 #include "systems/CameraSystem.hpp"
+#include "systems/GravitySystem.hpp"
 #include "systems/InteractableWithPlanetSystem.hpp"
 #include "systems/PhysicsSystem.hpp"
 #include "systems/PlayerSystem.hpp"

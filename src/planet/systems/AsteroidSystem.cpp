@@ -49,9 +49,9 @@ void AsteroidSystem::spawn()
     renderable.sprite.setScale(sf::Vector2f{0.2f, 0.2f});
     auto& collidable = m_registryRef->emplace<Collidable>(asteroid);
     collidable.radius = renderable.sprite.getGlobalBounds().height / 2.f;
-    auto& interactableWithPlanet = m_registryRef->emplace<InteractableWithPlanet>(asteroid);
-    interactableWithPlanet.planet = m_registryRef->ctx().get<entt::entity>();
-    interactableWithPlanet.gravityKoef = 5000000.f;
+    auto& gravity = m_registryRef->emplace<Gravity>(asteroid);
+    gravity.planet = m_registryRef->ctx().get<entt::entity>();
+    gravity.gravityKoef = 5000000.f;
 
     LOG("Spawn " + tstr((unsigned)asteroid));
 }

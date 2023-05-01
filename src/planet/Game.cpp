@@ -28,6 +28,7 @@ void Game::init()
 
     m_systemManager.addSystem(std::make_unique<PlayerSystem>());
     m_systemManager.addSystem(std::make_unique<InteractableWithPlanetSystem>());
+    m_systemManager.addSystem(std::make_unique<GravitySystem>());
     m_systemManager.addSystem(std::make_unique<PhysicsSystem>());
     m_systemManager.addSystem(std::make_unique<BulletSystem>());
     m_systemManager.addSystem(std::make_unique<CameraSystem>());
@@ -65,9 +66,11 @@ void Game::init()
       //  renderable.sprite.setScale(0.1f, 0.1f);
         auto& collidable = registry.emplace<Collidable>(player);
         collidable.radius = renderable.sprite.getGlobalBounds().height / 2.f;
+        auto& gravity = registry.emplace<Gravity>(player);
+        gravity.planet = planet;
+        gravity.gravityKoef = 50000000.f;
         auto& interactableWithPlanet = registry.emplace<InteractableWithPlanet>(player);
         interactableWithPlanet.planet = planet;
-        interactableWithPlanet.gravityKoef = 50000000.f;
     }
     {
         auto camera = registry.create();

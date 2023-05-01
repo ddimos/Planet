@@ -32,10 +32,15 @@ struct Collidable
     float radius = 0.f;
 };
 
+struct Gravity
+{
+    float gravityKoef = 0.f;
+    entt::entity planet = entt::null;
+};
+
 struct InteractableWithPlanet
 {
     entt::entity planet = entt::null;
-    float gravityKoef = 0.f;
 };
 
 struct Bullet
