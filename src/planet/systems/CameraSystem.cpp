@@ -1,5 +1,9 @@
 #include "systems/CameraSystem.hpp"
-#include "components/Components.hpp"
+#include "components/CameraComponent.hpp"
+#include "components/InteractableWithPlanetComponent.hpp"
+#include "components/PlayerComponent.hpp"
+#include "components/TransformComponent.hpp"
+
 #include "core/Utils.hpp"
 
 void CameraSystem::onUpdate(float _dt)

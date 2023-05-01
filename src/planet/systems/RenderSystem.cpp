@@ -1,5 +1,7 @@
 #include "systems/RenderSystem.hpp"
-#include "components/Components.hpp"
+#include "components/CameraComponent.hpp"
+#include "components/RenderableComponent.hpp"
+#include "components/TransformComponent.hpp"
 #include "core/Engine.hpp"
 
 #include <SFML/Graphics.hpp>

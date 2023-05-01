@@ -1,13 +1,13 @@
 #include "systems/RenderDebugSystem.hpp"
-#include "components/Components.hpp"
-
+#include "components/CollidableComponent.hpp"
+#include "components/TransformComponent.hpp"
 #include <SFML/Graphics.hpp>
 
 // TODO ifdef 
     
 RenderDebugSystem::RenderDebugSystem(sf::RenderWindow& _window)
     : m_windowRef(_window)
-    , m_isCollidersEnabled(true)
+    , m_isCollidersEnabled(false)
 {
 }
 

@@ -1,5 +1,6 @@
 #include "systems/InteractableWithPlanetSystem.hpp"
-#include "components/Components.hpp"
+#include "components/InteractableWithPlanetComponent.hpp"
+#include "components/TransformComponent.hpp"
 #include "core/Utils.hpp"
 
 namespace

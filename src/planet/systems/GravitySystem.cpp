@@ -1,5 +1,7 @@
 #include "systems/GravitySystem.hpp"
-#include "components/Components.hpp"
+#include "components/BodyComponent.hpp"
+#include "components/GravityComponent.hpp"
+#include "components/TransformComponent.hpp"
 #include "core/Utils.hpp"
 
 void GravitySystem::onUpdate(float _dt)

@@ -1,5 +1,7 @@
 #include "systems/PhysicsSystem.hpp"
-#include "components/Components.hpp"
+#include "components/BodyComponent.hpp"
+#include "components/CollidableComponent.hpp"
+#include "components/TransformComponent.hpp"
 #include "events/Events.hpp"
 #include "core/Utils.hpp"
 #include <iterator>
