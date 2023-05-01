@@ -36,8 +36,8 @@ void BulletSystem::receiveShootEvent(const ShootEvent& _event)
     auto& renderable = m_registryRef->emplace<Renderable>(bullet);
     renderable.sprite.setTexture(m_engineRef->getResourceManager().getTexture("bullet"));
     renderable.sprite.setOrigin(renderable.sprite.getLocalBounds().width / 2.f, renderable.sprite.getLocalBounds().height / 2.f);
-    // auto& collidable = m_registryRef->emplace<Collidable>(bullet);
-    // collidable.radius = renderable.sprite.getLocalBounds().height / 2.f;
+    auto& collidable = m_registryRef->emplace<Collidable>(bullet);
+    collidable.radius = renderable.sprite.getGlobalBounds().height / 6.f;
     // auto& interactableWithPlanet = m_registryRef->emplace<InteractableWithPlanet>(bullet);
     // interactableWithPlanet.planet = planet;
     // interactableWithPlanet.gravityKoef = 10000000.f;
@@ -45,5 +45,13 @@ void BulletSystem::receiveShootEvent(const ShootEvent& _event)
 
 void BulletSystem::receiveCollisionEvent(const CollisionEvent& _event)
 {
-
+    // TODO there should be a better place
+    if (m_registryRef->all_of<Bullet>(_event.entityA) || m_registryRef->all_of<Bullet>(_event.entityB))
+    {
+        if (m_registryRef->all_of<Asteroid>(_event.entityA) || m_registryRef->all_of<Asteroid>(_event.entityB))
+        {
+            m_registryRef->destroy(_event.entityA);
+            m_registryRef->destroy(_event.entityB);
+        }
+    }
 }

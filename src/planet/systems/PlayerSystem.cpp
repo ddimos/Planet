@@ -34,8 +34,7 @@ void PlayerSystem::onUpdate(float _dt)
         auto tangentVec = tangentVector(normalVec);
 
         body.velocity += player.speed * deltaPos.x * tangentVec;
-        // TODO implement the Y movement
-        // body.velocity += player.speedY * deltaPos.y * normalVec;
+         body.velocity += player.speed * deltaPos.y * normalVec;
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
         {

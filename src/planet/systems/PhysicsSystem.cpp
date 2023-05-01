@@ -2,6 +2,7 @@
 #include "components/Components.hpp"
 #include "events/Events.hpp"
 #include "core/Utils.hpp"
+#include <iterator>
 
 namespace
 {
@@ -129,31 +130,41 @@ namespace
     }
 } // namespace
 
-
 void PhysicsSystem::onUpdate(float _dt)
 {
     std::vector<CollisionPair> collidingPairs;
-    for(auto &&[entityA, transformA, collidableA] : m_registryRef->view<Transform, Collidable>().each())
+
+    auto view = m_registryRef->view<Transform, Collidable>();
+    for(auto it = view.begin(), last = view.end(); it != last; ++it) 
     {
+        auto entityA = *it;
+        auto& transformA = view.get<Transform>(entityA);
+        auto& collidableA = view.get<Collidable>(entityA);
         Body* bodyA = (m_registryRef->all_of<Body>(entityA)) ? &m_registryRef->get<Body>(entityA) : nullptr;
 
-        for(auto &&[entityB, transformB, collidableB] : m_registryRef->view<Transform, Collidable>().each())
+        for(auto it2 = std::next(it); it2 != view.end(); ++it2) 
         {
-            if (entityA == entityB) 
-                continue;
+            auto entityB = *it2;
 
+            auto& transformB = view.get<Transform>(entityB);
+            auto& collidableB = view.get<Collidable>(entityB);
             Body* bodyB = (m_registryRef->all_of<Body>(entityB)) ? &m_registryRef->get<Body>(entityB) : nullptr;
+
+            // TODO canColide
+            if (m_registryRef->all_of<Player>(entityA) || m_registryRef->all_of<Player>(entityB))
+                if (m_registryRef->all_of<Bullet>(entityA) || m_registryRef->all_of<Bullet>(entityB))
+                    continue;
 
             CollisionPair pair(entityA, collidableA, transformA, bodyA, entityB, collidableB, transformB, bodyB);
             if (!pair.isCollide())
-                break;
+                continue;
 
             // TODO add a way to trigger an event only for specified types of entities
             m_dispatcherRef->trigger<CollisionEvent>({entityA, entityB});
 
             collidingPairs.push_back(pair);
         }
-    }   
+    }  
 
     for (auto& pair : collidingPairs)
     {

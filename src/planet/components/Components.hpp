@@ -49,3 +49,7 @@ struct Camera
     sf::Vector2f size = {};
     float offsetFromThePlanet = 0.f;
 };
+
+struct Asteroid
+{
+};
