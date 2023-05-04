@@ -41,6 +41,7 @@ void Game::init()
 
     m_systemManager.addRenderSystem(std::make_unique<RenderSystem>(m_windowRef));
     m_systemManager.addRenderSystem(std::make_unique<RenderDebugSystem>(m_windowRef));
+    m_systemManager.addRenderSystem(std::make_unique<UISystem>(m_windowRef));
 
     m_systemManager.init();
 
@@ -50,7 +51,7 @@ void Game::init()
     registry.ctx().emplace<entt::entity>(planet);   // TODO give a name
     {
         auto& transform = registry.emplace<Transform>(planet);
-        transform.position = sf::Vector2f(600.f, 484.f);
+        transform.position = sf::Vector2f(0.f, 0.f);
         auto& renderable = registry.emplace<Renderable>(planet);
         renderable.sprite.setTexture(resourceManager.getTexture("earth"));
         renderable.sprite.setPosition(transform.position);
@@ -59,13 +60,17 @@ void Game::init()
         collidable.radius = renderable.sprite.getGlobalBounds().width / 2.f;
         collidable.typeFlag = EntityType::PLANET;
         collidable.canColideWithFlags = EntityType::PLAYER | EntityType::BULLET | EntityType::ASTEROID;
+        auto& uiMap = registry.emplace<UIMapComponent>(planet);
+        uiMap.color = sf::Color::Blue;
+        uiMap.radius = renderable.sprite.getGlobalBounds().height / 2.f;
     }
     auto player = registry.create();
     {
         auto& playerComponent = registry.emplace<Player>(player);
         playerComponent.speed = 5.f;
         registry.emplace<Body>(player);
-        registry.emplace<Transform>(player);
+        auto& transform = registry.emplace<Transform>(player);
+        transform.position = sf::Vector2f(600.f, 484.f);
         auto& renderable = registry.emplace<Renderable>(player);
         renderable.sprite.setTexture(resourceManager.getTexture("player_front"));
         renderable.sprite.setPosition(sf::Vector2f(0.f, 0.f));
@@ -80,6 +85,9 @@ void Game::init()
         interactableWithPlanet.planet = planet;
         collidable.typeFlag = EntityType::PLAYER;
         collidable.canColideWithFlags = EntityType::PLANET | EntityType::ASTEROID;
+        auto& uiMap = registry.emplace<UIMapComponent>(player);
+        uiMap.color = sf::Color::Green;
+        uiMap.radius = renderable.sprite.getGlobalBounds().height / 2.f;
     }
     {
         auto camera = registry.create();

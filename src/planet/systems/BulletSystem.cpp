@@ -41,6 +41,9 @@ void BulletSystem::receiveShootEvent(const ShootEvent& _event)
     collidable.radius = renderable.sprite.getGlobalBounds().height / 6.f;
     collidable.typeFlag = EntityType::BULLET;
     collidable.canColideWithFlags = EntityType::ASTEROID | EntityType::PLANET;
+    auto& uiMap = m_registryRef->emplace<UIMapComponent>(bullet);
+    uiMap.color = sf::Color::White;
+    uiMap.radius = renderable.sprite.getGlobalBounds().height / 6.f;
     // auto& interactableWithPlanet = m_registryRef->emplace<InteractableWithPlanet>(bullet);
     // interactableWithPlanet.planet = planet;
     // interactableWithPlanet.gravityKoef = 10000000.f;

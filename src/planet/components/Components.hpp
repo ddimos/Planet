@@ -10,3 +10,4 @@
 #include "components/PlayerComponent.hpp"
 #include "components/RenderableComponent.hpp"
 #include "components/TransformComponent.hpp"
+#include "components/UIMapComponent.hpp"

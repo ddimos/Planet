@@ -57,6 +57,9 @@ void AsteroidSystem::spawn()
     auto& gravity = m_registryRef->emplace<Gravity>(asteroid);
     gravity.planet = m_registryRef->ctx().get<entt::entity>();
     gravity.gravityKoef = 5000000.f;
+    auto& uiMap = m_registryRef->emplace<UIMapComponent>(asteroid);
+    uiMap.color = sf::Color::Red;
+    uiMap.radius = renderable.sprite.getGlobalBounds().height / 2.f;
 
     LOG("Spawn " + tstr((unsigned)asteroid));
 }
