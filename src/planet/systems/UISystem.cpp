@@ -10,6 +10,7 @@
 UISystem::UISystem(sf::RenderWindow& _window)
     : m_windowRef(_window)
 {
+    m_minimapSize *= 2.f;
     m_minimapView.setViewport(sf::FloatRect(0.75f, 0.f, 0.25f, 0.333f));
     m_minimapView.setSize(m_minimapSize);
     m_minimapView.setCenter(0.f, 0.f);
