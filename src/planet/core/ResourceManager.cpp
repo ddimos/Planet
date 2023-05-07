@@ -1,7 +1,7 @@
 #include "core/ResourceManager.hpp"
 #include "core/Log.hpp"
 
-void ResourceManager::loadTexture(std::string _path, std::string _name)
+void ResourceManager::loadTexture(std::string _path, std::string _name, TextureConfig _config /*= {}*/)
 {
     sf::Texture texture;
     if (!texture.loadFromFile(_path))
@@ -9,7 +9,8 @@ void ResourceManager::loadTexture(std::string _path, std::string _name)
         LOG_ERROR("Couldn't load a texture " + _path);
         return;
     }
-    texture.setSmooth(true); // Not sure if it's supposed to be here
+    texture.setSmooth(_config.isSmooth); // Not sure if it's supposed to be here
+    texture.setRepeated(_config.isRepeated);
     m_textures.insert_or_assign(_name, texture);
 }
 

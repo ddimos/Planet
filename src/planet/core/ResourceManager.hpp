@@ -4,13 +4,19 @@
 #include <unordered_map>
 #include <string>
 
+struct TextureConfig
+{
+    bool isSmooth = false;
+    bool isRepeated = false;
+};
+
 class ResourceManager
 {
 public:
     ResourceManager() = default;
     ~ResourceManager() = default;
 
-    void loadTexture(std::string _path, std::string _name);
+    void loadTexture(std::string _path, std::string _name, TextureConfig _config = {});
     void loadFont(std::string _path, std::string _name);
 
     const sf::Texture& getTexture(std::string _name);

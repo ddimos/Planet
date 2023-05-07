@@ -14,11 +14,11 @@ RenderSystem::RenderSystem(sf::RenderWindow& _window)
 void RenderSystem::onInit()
 {
     m_background.setTexture(m_engineRef->getResourceManager().getTexture("sky_stars"));
-    m_background.setPosition(sf::Vector2f(-300.f, -300.f));
+    m_background.setPosition(sf::Vector2f(-2000.f, -1500.f));
+    m_background.setTextureRect({0,0, 4000, 3000});
 
     auto windowSize = m_windowRef.getSize();
-//    m_view.setSize(windowSize.x*0.3f, windowSize.y*0.3f);
-   m_view.setSize(windowSize.x, windowSize.y);
+    m_view.setSize(windowSize.x, windowSize.y);
 }
 
 void RenderSystem::onUpdate(float _dt)

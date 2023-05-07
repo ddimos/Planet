@@ -22,11 +22,11 @@ void Game::init()
 {
     // TODO use the entt hash string 
     auto& resourceManager = m_engineRef.getResourceManager();
-    resourceManager.loadTexture("res/textures/earth.png", "earth");
-    resourceManager.loadTexture("res/textures/sky_stars.jpg", "sky_stars");
-    resourceManager.loadTexture("res/textures/player_front.png", "player_front");
-    resourceManager.loadTexture("res/textures/01.png", "bullet");
-    resourceManager.loadTexture("res/textures/asteroid.png", "asteroid");
+    resourceManager.loadTexture("res/textures/earth.png", "earth", TextureConfig{.isSmooth = true});
+    resourceManager.loadTexture("res/textures/sky_stars.jpg", "sky_stars", TextureConfig{.isRepeated = true});
+    resourceManager.loadTexture("res/textures/player_front.png", "player_front", TextureConfig{.isSmooth = true});
+    resourceManager.loadTexture("res/textures/01.png", "bullet", TextureConfig{.isSmooth = true});
+    resourceManager.loadTexture("res/textures/asteroid.png", "asteroid", TextureConfig{.isSmooth = true});
 
     m_systemManager.addSystem(std::make_unique<PlayerSystem>());
     m_systemManager.addSystem(std::make_unique<InteractableWithPlanetSystem>());
@@ -52,9 +52,11 @@ void Game::init()
     {
         auto& transform = registry.emplace<Transform>(planet);
         transform.position = sf::Vector2f(0.f, 0.f);
+     //   transform.scale = 5.f;
         auto& renderable = registry.emplace<Renderable>(planet);
         renderable.sprite.setTexture(resourceManager.getTexture("earth"));
         renderable.sprite.setPosition(transform.position);
+     //   renderable.sprite.setScale({5.f, 5.f});
          renderable.sprite.setOrigin(renderable.sprite.getLocalBounds().width / 2.f, renderable.sprite.getLocalBounds().height / 2.f);
         auto& collidable = registry.emplace<Collidable>(planet);
         collidable.radius = renderable.sprite.getGlobalBounds().width / 2.f;
@@ -95,6 +97,7 @@ void Game::init()
         auto& cameraComp = registry.emplace<Camera>(camera);
         cameraComp.target = player;
         cameraComp.size = sf::Vector2f{m_windowRef.getSize()};
+        // cameraComp.size = sf::Vector2f{m_windowRef.getSize()*4u};
         cameraComp.offsetFromThePlanet = 200.f;
     }
 }
