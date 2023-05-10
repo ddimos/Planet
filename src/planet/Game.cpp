@@ -28,6 +28,8 @@ void Game::init()
     resourceManager.loadTexture("res/textures/01.png", "bullet", TextureConfig{.isSmooth = true});
     resourceManager.loadTexture("res/textures/asteroid.png", "asteroid", TextureConfig{.isSmooth = true});
 
+    resourceManager.loadFont("res/fonts/times_new_roman.ttf", "times_new_roman");
+
     m_systemManager.addSystem(std::make_unique<PlayerSystem>());
     m_systemManager.addSystem(std::make_unique<InteractableWithPlanetSystem>());
     m_systemManager.addSystem(std::make_unique<GravitySystem>());

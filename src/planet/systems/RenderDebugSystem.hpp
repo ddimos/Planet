@@ -17,4 +17,5 @@ private:
 
     sf::RenderWindow& m_windowRef;
     bool m_isCollidersEnabled = false;
+    bool m_isPosAndVelEnabled = false;
 };
