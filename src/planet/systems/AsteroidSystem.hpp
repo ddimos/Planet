@@ -10,10 +10,18 @@ public:
 
 private:
     void onUpdate(float _dt) override;
+    
+    void checkSpawn(float _dt);
+    float getNewSpawnFrequency();
     void spawn();
 
-    const float m_spawnFrequencyS = 6.f;
-    float m_spawnTimeS = m_spawnFrequencyS;
-    bool m_isPressed = false;
     Random m_randomizer;
+
+    const float m_maxDistanceFromPlanet = 0.f; 
+    const float m_minDistanceFromPlanet = 0.f;
+    const float m_maxSpawnFrequencyS = 0.f; 
+    const float m_minSpawnFrequencyS = 0.f;
+   
+    float m_spawnTimeS = 0.;
+    bool m_isPressed = false;
 };

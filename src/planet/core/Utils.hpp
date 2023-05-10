@@ -29,3 +29,21 @@ inline sf::Vector2f tangentVector(const sf::Vector2f _v)
 
 float angleBetweenVectors(const sf::Vector2f& _vec1, const sf::Vector2f& _vec2);
 sf::Vector2f normalizedVector(const sf::Vector2f _v);
+
+// -------------------------------------------------
+
+struct PolarPos
+{
+    float phi = 0.f;
+    float r = 0.f;
+};
+
+inline PolarPos convertToPolar(sf::Vector2f _pos)
+{
+    return PolarPos{ .phi = toDeg(atan2f(_pos.y, _pos.x) - M_PI_2), .r = sqrtf(_pos.x*_pos.x + _pos.y*_pos.y) };
+}
+
+inline sf::Vector2f convertToCartesian(PolarPos _polar)
+{
+    return sf::Vector2f{ -1.f * _polar.r * sinf(toRad(_polar.phi)), _polar.r * cosf(toRad(_polar.phi)) };;
+}
