@@ -16,8 +16,8 @@ void CameraSystem::onUpdate(float _dt)
 
         if (m_registryRef->valid(camera.target) && m_registryRef->all_of<Transform>(camera.target))
         {        
-            auto& targetTransform = m_registryRef->get<Transform>(camera.target);
-            sf::Vector2f cameraPosition{ targetTransform.position };
+            auto& targetTransform = m_registryRef->get<Transform>(camera.target);            
+            sf::Vector2f targetedCameraPosition{ targetTransform.position };
 
             if (camera.offsetFromThePlanet != 0.f && m_registryRef->all_of<InteractableWithPlanet, Player>(camera.target))
             {
@@ -25,11 +25,16 @@ void CameraSystem::onUpdate(float _dt)
                 auto& planetTransform = m_registryRef->get<Transform>(targetInterWithPlanet.planet);
                 
                 sf::Vector2f direction = normalizedVector(targetTransform.position - planetTransform.position);
-
-                cameraPosition = targetTransform.position + direction * camera.offsetFromThePlanet;
+                targetedCameraPosition = targetTransform.position + direction * camera.offsetFromThePlanet;  
             }
-            cameraTransform.position = cameraPosition;
-            cameraTransform.rotation = targetTransform.rotation;
+            if (!approximatelyEqual(cameraTransform.position, targetedCameraPosition))
+                cameraTransform.position = (targetedCameraPosition - cameraTransform.position) * camera.speed * _dt + cameraTransform.position;
+            
+            if (!approximatelyEqual(cameraTransform.rotation, targetTransform.rotation))
+            {
+                float angleDif = normalizeAngle(targetTransform.rotation - cameraTransform.rotation);
+                cameraTransform.rotation = normalizeAngle((angleDif) * camera.angularSpeed * _dt + cameraTransform.rotation);
+            }
         }
         // TODO else case
     }

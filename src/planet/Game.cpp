@@ -101,6 +101,8 @@ void Game::init()
         cameraComp.target = player;
         cameraComp.size = sf::Vector2f{m_windowRef.getSize().x * 1.5f, m_windowRef.getSize().y * 1.5f};
         cameraComp.offsetFromThePlanet = 200.f;
+        cameraComp.speed = 7.f;
+        cameraComp.angularSpeed = 7.f;
     }
 }
 

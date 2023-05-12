@@ -2,6 +2,8 @@
 #include <cmath>
 #include <SFML/System/Vector2.hpp>
 
+constexpr float EPSILON = 0.0001f; 
+
 inline float toRad(float _angleInDeg)
 {
     return _angleInDeg * M_PI / 180.f;
@@ -46,4 +48,23 @@ inline PolarPos convertToPolar(sf::Vector2f _pos)
 inline sf::Vector2f convertToCartesian(PolarPos _polar)
 {
     return sf::Vector2f{ -1.f * _polar.r * sinf(toRad(_polar.phi)), _polar.r * cosf(toRad(_polar.phi)) };;
+}
+
+// -------------------------------------------------
+
+inline bool approximatelyEqual(float _a, float _b)
+{
+    return fabs(_a - _b) <= std::max(fabs(_a), fabs(_b)) * EPSILON;
+}
+
+inline bool approximatelyEqual(sf::Vector2f _a, sf::Vector2f _b)
+{
+    return approximatelyEqual(_a.x, _b.x) && approximatelyEqual(_a.y, _b.y);
+}
+
+// -------------------------------------------------
+
+inline float normalizeAngle(float _angle)
+{
+    return _angle + ((_angle > 180.f) ? -360.f : (_angle < -180.f) ? 360.f : 0.f);
 }
