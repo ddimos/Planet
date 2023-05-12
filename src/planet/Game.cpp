@@ -72,6 +72,7 @@ void Game::init()
     {
         auto& playerComponent = registry.emplace<Player>(player);
         playerComponent.speed = 5.f;
+        playerComponent.cooldownS = 0.5f;
         registry.emplace<Body>(player);
         auto& transform = registry.emplace<Transform>(player);
         transform.position = sf::Vector2f(600.f, 484.f);
@@ -98,8 +99,7 @@ void Game::init()
         registry.emplace<Transform>(camera);
         auto& cameraComp = registry.emplace<Camera>(camera);
         cameraComp.target = player;
-        cameraComp.size = sf::Vector2f{m_windowRef.getSize()};
-        // cameraComp.size = sf::Vector2f{m_windowRef.getSize()*4u};
+        cameraComp.size = sf::Vector2f{m_windowRef.getSize().x * 1.5f, m_windowRef.getSize().y * 1.5f};
         cameraComp.offsetFromThePlanet = 200.f;
     }
 }

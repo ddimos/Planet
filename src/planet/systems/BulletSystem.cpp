@@ -30,7 +30,7 @@ void BulletSystem::receiveShootEvent(const ShootEvent& _event)
     auto& bulletComp = m_registryRef->emplace<Bullet>(bullet);
     bulletComp.lifetimeS = 3.0f;
     auto& body = m_registryRef->emplace<Body>(bullet);
-    body.velocity = -100.f * _event.direction;
+    body.velocity = -150.f * _event.direction;
     auto& transform = m_registryRef->emplace<Transform>(bullet);
     transform.rotation = -toDeg(angleBetweenVectors(_event.direction, sf::Vector2f(-1.f, 0.f)));
     transform.position = _event.position;

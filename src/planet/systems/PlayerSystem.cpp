@@ -38,12 +38,12 @@ void PlayerSystem::onUpdate(float _dt)
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
         {
-            if (player.cooldownS <= 0.f)
+            if (player.cooldownDt <= 0.f)
             {
-                player.cooldownS = 1.f;
+                player.cooldownDt = player.cooldownS;
                 m_dispatcherRef->trigger<ShootEvent>({transform.position, normalVec});
             }
         }
-        player.cooldownS -= _dt;
+        player.cooldownDt -= _dt;
     }
 }
