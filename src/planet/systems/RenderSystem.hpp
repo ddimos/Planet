@@ -1,7 +1,7 @@
 #pragma once
 #include "systems/BaseSystem.hpp"
-#include <SFML/Graphics/Sprite.hpp> // for the background
 #include <SFML/Graphics/View.hpp>
+#include "Starfield.h"
 
 namespace sf
 {
@@ -18,6 +18,7 @@ private:
     void onInit() override;
 
     sf::RenderWindow& m_windowRef;
-    sf::Sprite m_background;
     sf::View m_view;
+
+    Starfield m_starfield;
 };

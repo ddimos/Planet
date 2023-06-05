@@ -23,7 +23,6 @@ void Game::init()
     // TODO use the entt hash string 
     auto& resourceManager = m_engineRef.getResourceManager();
     resourceManager.loadTexture("res/textures/earth.png", "earth", TextureConfig{.isSmooth = true});
-    resourceManager.loadTexture("res/textures/sky_stars.jpg", "sky_stars", TextureConfig{.isRepeated = true});
     resourceManager.loadTexture("res/textures/player_front.png", "player_front", TextureConfig{.isSmooth = true});
     resourceManager.loadTexture("res/textures/01.png", "bullet", TextureConfig{.isSmooth = true});
     resourceManager.loadTexture("res/textures/asteroid.png", "asteroid", TextureConfig{.isSmooth = true});

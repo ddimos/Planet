@@ -34,7 +34,7 @@ void Engine::start()
             accumulator -= DT;
         }
 
-        m_window.clear();
+        m_window.clear(sf::Color(2, 17, 34));   // TODO pass the color from the game 
     
 		m_game.render();
 

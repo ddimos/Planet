@@ -8,17 +8,16 @@
 
 RenderSystem::RenderSystem(sf::RenderWindow& _window)
     : m_windowRef(_window)
+    , m_starfield(_window)
 {
 }
 
 void RenderSystem::onInit()
 {
-    m_background.setTexture(m_engineRef->getResourceManager().getTexture("sky_stars"));
-    m_background.setPosition(sf::Vector2f(-2000.f, -1500.f));
-    m_background.setTextureRect({0,0, 4000, 3000});
-
     auto windowSize = m_windowRef.getSize();
     m_view.setSize(windowSize.x, windowSize.y);
+
+    m_starfield.init();
 }
 
 void RenderSystem::onUpdate(float _dt)
@@ -33,9 +32,9 @@ void RenderSystem::onUpdate(float _dt)
             m_view.setSize(camera.size);
         }
     }
-
     m_windowRef.setView(m_view);
-    m_windowRef.draw(m_background);
+    m_starfield.update(m_view.getCenter());
+
     for(auto &&[entity, transform, renderable] : m_registryRef->view<Transform, Renderable>().each())
     {
         renderable.sprite.setPosition(transform.position);
