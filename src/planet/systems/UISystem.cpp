@@ -1,8 +1,12 @@
 #include "systems/UISystem.hpp"
 
-#include "components/UIMapComponent.hpp"
+#include "components/PlayerComponent.hpp"
 #include "components/RenderableComponent.hpp"
 #include "components/TransformComponent.hpp"
+#include "components/UIMapComponent.hpp"
+
+#include "core/Engine.hpp"
+
 #include <SFML/Graphics.hpp>
 
 #include "EntityType.hpp"
@@ -14,11 +18,46 @@ UISystem::UISystem(sf::RenderWindow& _window)
     m_minimapView.setViewport(sf::FloatRect(0.75f, 0.f, 0.25f, 0.333f));
     m_minimapView.setSize(m_minimapSize);
     m_minimapView.setCenter(0.f, 0.f);
+    // TODO to take into account resolution (1024, 768)
+    
+    m_bulletCooldownText.setPosition(sf::Vector2f{860.f, 800.f});
+    m_bulletCooldownText.setCharacterSize(30);
+
+    m_missileCooldownText.setPosition(sf::Vector2f{860.f, 850.f});
+    m_missileCooldownText.setCharacterSize(30);
+}
+
+void UISystem::onInit()
+{
+    const auto& font = m_engineRef->getResourceManager().getFont("times_new_roman");
+    m_bulletCooldownText.setFont(font);
+    m_missileCooldownText.setFont(font);
 }
 
 void UISystem::onUpdate(float _dt)
 {
+    using namespace entt::literals;
+
     const auto& view = m_windowRef.getView();
+    m_windowRef.setView(m_uiView);
+
+    {    
+        entt::entity player = m_registryRef->ctx().get<entt::entity>("player"_hs);
+        auto& playerComponent = m_registryRef->get<Player>(player);
+        if (playerComponent.bulletCooldownDt <= 0.f)
+            m_bulletCooldownText.setString("Fire"); // TODO set it only once
+        else
+            m_bulletCooldownText.setString(std::to_string(playerComponent.bulletCooldownDt));
+
+        if (playerComponent.missileCooldownDt <= 0.f)
+            m_missileCooldownText.setString("Fire");
+        else
+            m_missileCooldownText.setString(std::to_string(playerComponent.missileCooldownDt));
+
+        m_windowRef.draw(m_bulletCooldownText);
+        m_windowRef.draw(m_missileCooldownText);
+    }
+
     m_windowRef.setView(m_minimapView);
 
     sf::CircleShape shape;

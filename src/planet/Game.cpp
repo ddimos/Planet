@@ -26,6 +26,7 @@ void Game::init()
     resourceManager.loadTexture("res/textures/player_front.png", "player_front", TextureConfig{.isSmooth = true});
     resourceManager.loadTexture("res/textures/01.png", "bullet", TextureConfig{.isSmooth = true});
     resourceManager.loadTexture("res/textures/asteroid.png", "asteroid", TextureConfig{.isSmooth = true});
+    resourceManager.loadTexture("res/textures/spr_missile_half.png", "missile", TextureConfig{.isSmooth = true});
 
     resourceManager.loadFont("res/fonts/times_new_roman.ttf", "times_new_roman");
 
@@ -33,10 +34,12 @@ void Game::init()
     m_systemManager.addSystem(std::make_unique<InteractableWithPlanetSystem>());
     m_systemManager.addSystem(std::make_unique<GravitySystem>());
     {
-        PhysicsSystem::NotificationPairs notificationPairs{{EntityType::ASTEROID, EntityType::BULLET}};
+        PhysicsSystem::NotificationPairs notificationPairs{{EntityType::ASTEROID, EntityType::PROJECTILE}};
         m_systemManager.addSystem(std::make_unique<PhysicsSystem>(move(notificationPairs)));
     }
-    m_systemManager.addSystem(std::make_unique<BulletSystem>());
+    m_systemManager.addSystem(std::make_unique<LifetimeSystem>());
+    m_systemManager.addSystem(std::make_unique<DamageSystem>());
+    m_systemManager.addSystem(std::make_unique<TargetingSystem>());
     m_systemManager.addSystem(std::make_unique<CameraSystem>());
     m_systemManager.addSystem(std::make_unique<AsteroidSystem>());
 
@@ -48,8 +51,10 @@ void Game::init()
 
     auto& registry = m_systemManager.getRegistry();
 
+    using namespace entt::literals;
+
     auto planet = registry.create();
-    registry.ctx().emplace<entt::entity>(planet);   // TODO give a name
+    registry.ctx().emplace_as<entt::entity>("planet"_hs, planet);
     {
         auto& transform = registry.emplace<Transform>(planet);
         transform.position = sf::Vector2f(0.f, 0.f);
@@ -62,16 +67,18 @@ void Game::init()
         auto& collidable = registry.emplace<Collidable>(planet);
         collidable.radius = renderable.sprite.getGlobalBounds().width / 2.f;
         collidable.typeFlag = EntityType::PLANET;
-        collidable.canColideWithFlags = EntityType::PLAYER | EntityType::BULLET | EntityType::ASTEROID;
+        collidable.canColideWithFlags = EntityType::PLAYER | EntityType::PROJECTILE | EntityType::ASTEROID;
         auto& uiMap = registry.emplace<UIMapComponent>(planet);
         uiMap.color = sf::Color::Blue;
         uiMap.radius = renderable.sprite.getGlobalBounds().height / 2.f;
     }
     auto player = registry.create();
+    registry.ctx().emplace_as<entt::entity>("player"_hs, player);
     {
         auto& playerComponent = registry.emplace<Player>(player);
         playerComponent.speed = 5.f;
-        playerComponent.cooldownS = 0.5f;
+        playerComponent.bulletCooldownS = 0.5f;
+        playerComponent.missileCooldownS = 5.f;
         registry.emplace<Body>(player);
         auto& transform = registry.emplace<Transform>(player);
         transform.position = sf::Vector2f(600.f, 484.f);

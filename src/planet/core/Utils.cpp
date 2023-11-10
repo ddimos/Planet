@@ -10,7 +10,7 @@ float angleBetweenVectors(const sf::Vector2f& _vec1, const sf::Vector2f& _vec2)
     return angle;
 }
 
-sf::Vector2f normalizedVector(const sf::Vector2f _v)
+sf::Vector2f normalizedVector(sf::Vector2f _v)
 {
     sf::Vector2f vOut{_v};
     const float len = vectorLength(_v);
@@ -20,4 +20,14 @@ sf::Vector2f normalizedVector(const sf::Vector2f _v)
         vOut = invLen * _v;
     }
     return vOut;
+}
+
+sf::Vector2f rotateVector(sf::Vector2f _v, float _angle)
+{
+    _angle = toRad(_angle);
+
+    float cs = std::cos(_angle);
+    float sn = std::sin(_angle);
+
+    return sf::Vector2f{_v.x * cs - _v.y * sn, _v.x * sn + _v.y * cs}; 
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-struct Bullet
+struct LifetimeComponent
 {
     float lifetimeS = 0.f;
 };

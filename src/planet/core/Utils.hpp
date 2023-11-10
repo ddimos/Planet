@@ -30,7 +30,9 @@ inline sf::Vector2f tangentVector(const sf::Vector2f _v)
 }
 
 float angleBetweenVectors(const sf::Vector2f& _vec1, const sf::Vector2f& _vec2);
-sf::Vector2f normalizedVector(const sf::Vector2f _v);
+sf::Vector2f normalizedVector(sf::Vector2f _v);
+
+sf::Vector2f rotateVector(sf::Vector2f _v, float _angle);
 
 // -------------------------------------------------
 

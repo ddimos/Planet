@@ -58,7 +58,9 @@ float AsteroidSystem::getNewSpawnFrequency()
 
 void AsteroidSystem::spawn()
 {
-    entt::entity planet = m_registryRef->ctx().get<entt::entity>();
+    using namespace entt::literals;
+
+    entt::entity planet = m_registryRef->ctx().get<entt::entity>("planet"_hs);
 
     PolarPos polar;
     polar.r = m_randomizer.rand(m_minDistanceFromPlanet, m_maxDistanceFromPlanet);
@@ -75,6 +77,7 @@ void AsteroidSystem::spawn()
     auto asteroid = m_registryRef->create();
 
     m_registryRef->emplace<Asteroid>(asteroid);
+    m_registryRef->emplace<Damageable>(asteroid);
     auto& body = m_registryRef->emplace<Body>(asteroid);
     body.velocity = speed * direction;
     auto& transform = m_registryRef->emplace<Transform>(asteroid);
@@ -88,9 +91,9 @@ void AsteroidSystem::spawn()
     auto& collidable = m_registryRef->emplace<Collidable>(asteroid);
     collidable.radius = renderable.sprite.getGlobalBounds().height / 2.f;
     collidable.typeFlag = EntityType::ASTEROID;
-    collidable.canColideWithFlags = EntityType::PLAYER | EntityType::BULLET | EntityType::ASTEROID | EntityType::PLANET;
+    collidable.canColideWithFlags = EntityType::PLAYER | EntityType::PROJECTILE | EntityType::ASTEROID | EntityType::PLANET;
     auto& gravity = m_registryRef->emplace<Gravity>(asteroid);
-    gravity.planet = m_registryRef->ctx().get<entt::entity>();
+    gravity.planet = m_registryRef->ctx().get<entt::entity>("planet"_hs);
     gravity.gravityKoef = 5000000.f;
     auto& uiMap = m_registryRef->emplace<UIMapComponent>(asteroid);
     uiMap.color = sf::Color::Red;

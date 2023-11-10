@@ -2,4 +2,5 @@
 
 struct Asteroid
 {
+    bool value = false;
 };

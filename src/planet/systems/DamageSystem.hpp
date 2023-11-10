@@ -2,17 +2,15 @@
 #include "systems/BaseSystem.hpp"
 
 class CollisionEvent;
-class ShootEvent;
+class PlayerShootBulletEvent;
 
-class BulletSystem : public BaseSystem
+class DamageSystem : public BaseSystem
 {
 public:
-    BulletSystem() = default;
+    DamageSystem() = default;
 
 private:
     void onInit() override;
-    void onUpdate(float _dt) override;
 
-    void receiveShootEvent(const ShootEvent& _event);
     void receiveCollisionEvent(const CollisionEvent& _event);
 };
