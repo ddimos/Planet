@@ -58,44 +58,58 @@ void Game::init()
     {
         auto& transform = registry.emplace<Transform>(planet);
         transform.position = sf::Vector2f(0.f, 0.f);
-     //   transform.scale = 5.f;
+        transform.scale = 3.f;
+
         auto& renderable = registry.emplace<Renderable>(planet);
         renderable.sprite.setTexture(resourceManager.getTexture("earth"));
         renderable.sprite.setPosition(transform.position);
-     //   renderable.sprite.setScale({5.f, 5.f});
-         renderable.sprite.setOrigin(renderable.sprite.getLocalBounds().width / 2.f, renderable.sprite.getLocalBounds().height / 2.f);
+        renderable.sprite.setScale(transform.scale, transform.scale);
+        renderable.sprite.setOrigin(renderable.sprite.getLocalBounds().width / 2.f, renderable.sprite.getLocalBounds().height / 2.f);
+        
         auto& collidable = registry.emplace<Collidable>(planet);
         collidable.radius = renderable.sprite.getGlobalBounds().width / 2.f;
         collidable.typeFlag = EntityType::PLANET;
         collidable.canColideWithFlags = EntityType::PLAYER | EntityType::PROJECTILE | EntityType::ASTEROID;
+
         auto& uiMap = registry.emplace<UIMapComponent>(planet);
         uiMap.color = sf::Color::Blue;
         uiMap.radius = renderable.sprite.getGlobalBounds().height / 2.f;
     }
+
     auto player = registry.create();
     registry.ctx().emplace_as<entt::entity>("player"_hs, player);
     {
         auto& playerComponent = registry.emplace<Player>(player);
-        playerComponent.speed = 5.f;
+        playerComponent.speed = 20.f;
         playerComponent.bulletCooldownS = 0.5f;
         playerComponent.missileCooldownS = 5.f;
+        playerComponent.speedBoostCoefficient = 2.f;
+        playerComponent.speedBoostTimeIntervalS = 1.f;
+        playerComponent.speedBoostTimeIntervalDt = playerComponent.speedBoostTimeIntervalS;
+
         registry.emplace<Body>(player);
+        
         auto& transform = registry.emplace<Transform>(player);
         transform.position = sf::Vector2f(600.f, 484.f);
+
         auto& renderable = registry.emplace<Renderable>(player);
         renderable.sprite.setTexture(resourceManager.getTexture("player_front"));
         renderable.sprite.setPosition(sf::Vector2f(0.f, 0.f));
         renderable.sprite.setOrigin(renderable.sprite.getLocalBounds().width / 2.f, renderable.sprite.getLocalBounds().height / 2.f);
       //  renderable.sprite.setScale(0.1f, 0.1f);
+        
         auto& collidable = registry.emplace<Collidable>(player);
         collidable.radius = renderable.sprite.getGlobalBounds().height / 2.f;
+        
         auto& gravity = registry.emplace<Gravity>(player);
         gravity.planet = planet;
         gravity.gravityKoef = 50000000.f;
+        
         auto& interactableWithPlanet = registry.emplace<InteractableWithPlanet>(player);
         interactableWithPlanet.planet = planet;
         collidable.typeFlag = EntityType::PLAYER;
         collidable.canColideWithFlags = EntityType::PLANET | EntityType::ASTEROID;
+        
         auto& uiMap = registry.emplace<UIMapComponent>(player);
         uiMap.color = sf::Color::Green;
         uiMap.radius = renderable.sprite.getGlobalBounds().height / 2.f;
@@ -103,6 +117,7 @@ void Game::init()
     {
         auto camera = registry.create();
         registry.emplace<Transform>(camera);
+        
         auto& cameraComp = registry.emplace<Camera>(camera);
         cameraComp.target = player;
         cameraComp.size = sf::Vector2f{m_windowRef.getSize().x * 1.5f, m_windowRef.getSize().y * 1.5f};

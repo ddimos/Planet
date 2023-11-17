@@ -11,6 +11,11 @@
 
 #include "EntityType.hpp"
 
+namespace
+{
+    const sf::Vector2f SPEED_BOOST_PROGRESS_BAR_SIZE{ 60.f, 30.f };
+}
+
 UISystem::UISystem(sf::RenderWindow& _window)
     : m_windowRef(_window)
 {
@@ -25,6 +30,10 @@ UISystem::UISystem(sf::RenderWindow& _window)
 
     m_missileCooldownText.setPosition(sf::Vector2f{860.f, 850.f});
     m_missileCooldownText.setCharacterSize(30);
+
+    m_speedBoostProgress.setPosition(sf::Vector2f{860.f, 900.f});
+    m_speedBoostProgress.setFillColor(sf::Color::White);
+    m_speedBoostProgress.setSize(SPEED_BOOST_PROGRESS_BAR_SIZE);
 }
 
 void UISystem::onInit()
@@ -56,6 +65,16 @@ void UISystem::onUpdate(float _dt)
 
         m_windowRef.draw(m_bulletCooldownText);
         m_windowRef.draw(m_missileCooldownText);
+
+        if (playerComponent.speedBoostTimeIntervalS > 0.f)
+        {
+            m_speedBoostProgress.setSize(
+                sf::Vector2f(
+                    (SPEED_BOOST_PROGRESS_BAR_SIZE.x * playerComponent.speedBoostTimeIntervalDt) 
+                            / playerComponent.speedBoostTimeIntervalS,
+                     SPEED_BOOST_PROGRESS_BAR_SIZE.y));
+            m_windowRef.draw(m_speedBoostProgress);
+        }
     }
 
     m_windowRef.setView(m_minimapView);

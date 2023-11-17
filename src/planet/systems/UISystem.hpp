@@ -1,5 +1,6 @@
 #pragma once
 #include "systems/BaseSystem.hpp"
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/View.hpp>
 #include <SFML/Graphics/Text.hpp>
 
@@ -25,4 +26,5 @@ private:
 
     sf::Text m_bulletCooldownText;
     sf::Text m_missileCooldownText;
+    sf::RectangleShape m_speedBoostProgress;
 };

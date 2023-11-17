@@ -7,4 +7,8 @@ struct Player
     float missileCooldownS = 0.f;
     float bulletCooldownDt = 0.f;
     float missileCooldownDt = 0.f;
+    
+    float speedBoostCoefficient = 0.f;
+    float speedBoostTimeIntervalS = 0.f;
+    float speedBoostTimeIntervalDt = 0.f;
 };

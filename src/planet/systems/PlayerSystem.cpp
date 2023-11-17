@@ -8,6 +8,18 @@
 
 #include <SFML/Window/Keyboard.hpp>
 
+namespace
+{
+struct Inputs
+{
+    bool moveLeft = false;
+    bool moveRight = false;
+    bool boost = false;
+    bool shootBullet = false;
+    bool launchMissile = false;
+};
+}
+
 PlayerSystem::PlayerSystem()
 {
 }
@@ -20,53 +32,69 @@ void PlayerSystem::onInit()
 
 void PlayerSystem::onUpdate(float _dt)
 {
-    float m_phi = 0;
-    float m_r = 0;
-    auto view = m_registryRef->view<Body, Transform, Player>();
-    for(auto entity : view)
+    using namespace entt::literals;
+
+    Inputs inputs;
+    inputs.moveLeft = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
+    inputs.moveRight = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+    inputs.boost = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+    inputs.shootBullet = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+    inputs.launchMissile = sf::Keyboard::isKeyPressed(sf::Keyboard::X);
+    
+    entt::entity player = m_registryRef->ctx().get<entt::entity>("player"_hs);
+
+    auto& playerComp = m_registryRef->get<Player>(player);
+    auto& playerTransform = m_registryRef->get<Transform>(player);
+    auto polarPos = convertToPolar(playerTransform.position);
+    
+    sf::Vector2f deltaPos = {0, 0};
+    if (inputs.moveLeft)
+        deltaPos.x -= 1.f;
+    if (inputs.moveRight)
+        deltaPos.x += 1.f;
+
+    float speed = playerComp.speed;
+    if (inputs.boost)
     {
-        auto& player = view.get<Player>(entity);
-        auto& body = view.get<Body>(entity);
-        auto& transform = view.get<Transform>(entity);
-
-        sf::Vector2f deltaPos = {0, 0};
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-            deltaPos.x += 1.f;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-            deltaPos.x -= 1.f;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-            deltaPos.y -= 1.f;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-            deltaPos.y += 1.f;
-        auto& planet = m_registryRef->get<InteractableWithPlanet>(entity);
-        auto& planetTrans = m_registryRef->get<Transform>(planet.planet);
-        auto normalVec = normalizedVector(planetTrans.position - transform.position);
-        auto tangentVec = tangentVector(normalVec);
-
-        body.velocity += player.speed * deltaPos.x * tangentVec;
-        body.velocity += player.speed * deltaPos.y * normalVec;
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+        if (playerComp.speedBoostTimeIntervalDt > 0.f)
         {
-            if (player.bulletCooldownDt <= 0.f)
-            {
-                player.bulletCooldownDt = player.bulletCooldownS;
-                m_dispatcherRef->trigger<PlayerShootBulletEvent>({transform.position, normalVec});
-            }
+            playerComp.speedBoostTimeIntervalDt -= _dt;
+            speed *= playerComp.speedBoostCoefficient;
         }
-        player.bulletCooldownDt -= _dt;
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
-        {
-            if (player.missileCooldownDt <= 0.f)
-            {
-                player.missileCooldownDt = player.missileCooldownS;
-                m_dispatcherRef->trigger<PlayerLaunchMissileEvent>({transform.position, normalVec});
-            }
-        }
-        player.missileCooldownDt -= _dt;
-        
     }
+    else
+    {
+        if (playerComp.speedBoostTimeIntervalDt <= playerComp.speedBoostTimeIntervalS)
+            playerComp.speedBoostTimeIntervalDt += _dt;
+    }
+
+    polarPos.phi += deltaPos.x * speed * _dt;
+    playerTransform.position = convertToCartesian(polarPos);
+
+    auto& planet = m_registryRef->get<InteractableWithPlanet>(player);
+    auto& planetTrans = m_registryRef->get<Transform>(planet.planet);
+    auto normalVec = normalizedVector(planetTrans.position - playerTransform.position);
+    auto tangentVec = tangentVector(normalVec);
+
+    if (inputs.shootBullet)
+    {
+        if (playerComp.bulletCooldownDt <= 0.f)
+        {
+            playerComp.bulletCooldownDt = playerComp.bulletCooldownS;
+            m_dispatcherRef->trigger<PlayerShootBulletEvent>({playerTransform.position, normalVec});
+        }
+    }
+    playerComp.bulletCooldownDt -= _dt;
+
+    if (inputs.launchMissile)
+    {
+        if (playerComp.missileCooldownDt <= 0.f)
+        {
+            playerComp.missileCooldownDt = playerComp.missileCooldownS;
+            m_dispatcherRef->trigger<PlayerLaunchMissileEvent>({playerTransform.position, normalVec});
+        }
+    }
+    playerComp.missileCooldownDt -= _dt;    
 }
 
 void PlayerSystem::receivePlayerShootBulletEvent(const PlayerShootBulletEvent& _event)
