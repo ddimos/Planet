@@ -16,8 +16,8 @@ void DamageSystem::receiveCollisionEvent(const CollisionEvent& _event)
     {
         if (m_registryRef->all_of<Damageable>(_event.entityA) || m_registryRef->all_of<Damageable>(_event.entityB))
         {
-            m_registryRef->destroy(_event.entityA);
-            m_registryRef->destroy(_event.entityB);
+            m_systemManagerRef->getEntityManager().registerEntityForDestruction(_event.entityA);
+            m_systemManagerRef->getEntityManager().registerEntityForDestruction(_event.entityB);
         }
     }
 }

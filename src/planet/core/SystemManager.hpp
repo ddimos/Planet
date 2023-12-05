@@ -5,6 +5,7 @@
 #include <entt/entity/registry.hpp>
 #include <entt/signal/dispatcher.hpp>
 
+#include "core/EntityManager.hpp"
 
 class Engine;
 class BaseSystem;
@@ -25,11 +26,14 @@ public:
     Engine& getEngine() { return m_engineRef; }
     entt::registry& getRegistry() { return m_registry; }
     entt::dispatcher& getDispatcher() { return m_dispatcher; }
+    EntityManager& getEntityManager() { return m_entityManager; }
 
 private:
     Engine& m_engineRef;
     entt::registry m_registry;
     entt::dispatcher m_dispatcher;
+
+    EntityManager m_entityManager;
 
     std::vector<std::unique_ptr<BaseSystem>> m_systems;
     std::vector<std::unique_ptr<BaseSystem>> m_renderSystems;

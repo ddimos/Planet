@@ -4,7 +4,8 @@
 
 
 SystemManager::SystemManager(Engine& _engineRef)
-    : m_engineRef(_engineRef)
+    : m_engineRef{_engineRef}
+    , m_entityManager{m_registry}
 {
 }
 
@@ -32,6 +33,7 @@ void SystemManager::update(float _dt)
 {
     for (auto& system : m_systems)
         system->update(_dt);
+    m_entityManager.destroyEntities();
 }
 
 void SystemManager::render()
