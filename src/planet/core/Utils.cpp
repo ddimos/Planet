@@ -2,7 +2,7 @@
 
 float angleBetweenVectors(const sf::Vector2f& _vec1, const sf::Vector2f& _vec2)
 {
-    float angle = atan2f(_vec2.y, _vec2.x) - atan2(_vec1.y, _vec1.x);
+    float angle = std::atan2(_vec2.y, _vec2.x) - std::atan2(_vec1.y, _vec1.x);
     
     if (angle > M_PI)        { angle -= 2 * M_PI; }
     else if (angle <= -M_PI) { angle += 2 * M_PI; }
@@ -30,4 +30,14 @@ sf::Vector2f rotateVector(sf::Vector2f _v, float _angle)
     float sn = std::sin(_angle);
 
     return sf::Vector2f{_v.x * cs - _v.y * sn, _v.x * sn + _v.y * cs}; 
+}
+
+sf::Vector2f rotateVectorInverse(sf::Vector2f _v, float _angle)
+{
+    _angle = toRad(_angle);
+
+    float cs = std::cos(_angle);
+    float sn = std::sin(_angle);
+
+    return sf::Vector2f{_v.x * cs + _v.y * sn, -1.f * _v.x * sn + _v.y * cs}; 
 }

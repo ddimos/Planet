@@ -33,6 +33,7 @@ float angleBetweenVectors(const sf::Vector2f& _vec1, const sf::Vector2f& _vec2);
 sf::Vector2f normalizedVector(sf::Vector2f _v);
 
 sf::Vector2f rotateVector(sf::Vector2f _v, float _angle);
+sf::Vector2f rotateVectorInverse(sf::Vector2f _v, float _angle);
 
 // -------------------------------------------------
 
@@ -44,12 +45,12 @@ struct PolarPos
 
 inline PolarPos convertToPolar(sf::Vector2f _pos)
 {
-    return PolarPos{ .phi = toDeg(atan2f(_pos.y, _pos.x) - M_PI_2), .r = sqrtf(_pos.x*_pos.x + _pos.y*_pos.y) };
+    return PolarPos{ .phi = toDeg(std::atan2(_pos.y, _pos.x)), .r = std::sqrt(_pos.x*_pos.x + _pos.y*_pos.y) };
 }
 
 inline sf::Vector2f convertToCartesian(PolarPos _polar)
 {
-    return sf::Vector2f{ -1.f * _polar.r * sinf(toRad(_polar.phi)), _polar.r * cosf(toRad(_polar.phi)) };;
+    return sf::Vector2f{ _polar.r * std::cos(toRad(_polar.phi)), _polar.r * std::sin(toRad(_polar.phi)) };;
 }
 
 // -------------------------------------------------
