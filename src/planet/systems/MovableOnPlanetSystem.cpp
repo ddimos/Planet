@@ -1,5 +1,5 @@
-#include "systems/InteractableWithPlanetSystem.hpp"
-#include "components/InteractableWithPlanetComponent.hpp"
+#include "systems/MovableOnPlanetSystem.hpp"
+#include "components/MovableOnPlanetComponent.hpp"
 #include "components/TransformComponent.hpp"
 #include "core/Utils.hpp"
 
@@ -16,9 +16,9 @@ namespace
 } // namespace
 
 
-void InteractableWithPlanetSystem::onUpdate(float _dt)
+void MovableOnPlanetSystem::onUpdate(float _dt)
 {
-    for(auto &&[entity, transform, interactableWithPlanet] : m_registryRef->view<Transform, InteractableWithPlanet>().each())
+    for(auto &&[entity, transform, interactableWithPlanet] : m_registryRef->view<Transform, MovableOnPlanet>().each())
     {
         auto& planet = m_registryRef->get<Transform>(interactableWithPlanet.planet);
         transform.rotation = adjustRotation(planet.position, transform);

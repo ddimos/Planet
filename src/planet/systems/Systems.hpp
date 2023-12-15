@@ -2,10 +2,12 @@
 
 #include "systems/AsteroidSystem.hpp"
 #include "systems/CameraSystem.hpp"
+#include "systems/ChildSystem.hpp"
 #include "systems/DamageSystem.hpp"
 #include "systems/GravitySystem.hpp"
-#include "systems/InteractableWithPlanetSystem.hpp"
+#include "systems/InteractionSystem.hpp"
 #include "systems/LifetimeSystem.hpp"
+#include "systems/MovableOnPlanetSystem.hpp"
 #include "systems/OrbitSystem.hpp"
 #include "systems/PhysicsSystem.hpp"
 #include "systems/PlayerSystem.hpp"

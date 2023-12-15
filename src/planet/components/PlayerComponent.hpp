@@ -11,4 +11,6 @@ struct Player
     float speedBoostCoefficient = 0.f;
     float speedBoostTimeIntervalS = 0.f;
     float speedBoostTimeIntervalDt = 0.f;
+
+    entt::entity canTeleportToPlanet = entt::null;
 };

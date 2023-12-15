@@ -76,25 +76,35 @@ void AsteroidSystem::spawn()
 
     auto asteroid = m_registryRef->create();
 
+    auto& entityComp = m_registryRef->emplace<EntityComponent>(asteroid);
+    entityComp.type = EntityType::ASTEROID;
+
     m_registryRef->emplace<Asteroid>(asteroid);
+
     m_registryRef->emplace<Damageable>(asteroid);
+    
     auto& body = m_registryRef->emplace<Body>(asteroid);
     body.velocity = speed * direction;
+
     auto& transform = m_registryRef->emplace<Transform>(asteroid);
     transform.position = asteroidPos;
     transform.rotation = rotation;
     transform.scale = scale;
+
     auto& renderable = m_registryRef->emplace<Renderable>(asteroid);
     renderable.sprite.setTexture(m_engineRef->getResourceManager().getTexture("asteroid"));
     renderable.sprite.setOrigin(renderable.sprite.getLocalBounds().width / 2.f, renderable.sprite.getLocalBounds().height / 2.f);
     renderable.sprite.setScale(sf::Vector2f{scale, scale});
+
     auto& collidable = m_registryRef->emplace<Collidable>(asteroid);
     collidable.radius = renderable.sprite.getGlobalBounds().height / 2.f;
-    collidable.typeFlag = EntityType::ASTEROID;
+    collidable.typeFlag = entityComp.type;
     collidable.canColideWithFlags = EntityType::PLAYER | EntityType::PROJECTILE | EntityType::ASTEROID | EntityType::PLANET;
+    
     auto& gravity = m_registryRef->emplace<Gravity>(asteroid);
     gravity.planet = m_registryRef->ctx().get<entt::entity>("planet"_hs);
     gravity.gravityKoef = 5000000.f;
+
     auto& uiMap = m_registryRef->emplace<UIMapComponent>(asteroid);
     uiMap.color = sf::Color::Red;
     uiMap.radius = renderable.sprite.getGlobalBounds().height / 2.f;

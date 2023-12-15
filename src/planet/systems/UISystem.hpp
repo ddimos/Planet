@@ -24,6 +24,7 @@ private:
 
     sf::Vector2f m_minimapSize{5000.f, 5000.f};
 
+    sf::Text m_canTeleportText;
     sf::Text m_bulletCooldownText;
     sf::Text m_missileCooldownText;
     sf::RectangleShape m_speedBoostProgress;

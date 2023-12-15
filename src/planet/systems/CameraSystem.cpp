@@ -1,6 +1,6 @@
 #include "systems/CameraSystem.hpp"
 #include "components/CameraComponent.hpp"
-#include "components/InteractableWithPlanetComponent.hpp"
+#include "components/MovableOnPlanetComponent.hpp"
 #include "components/PlayerComponent.hpp"
 #include "components/TransformComponent.hpp"
 
@@ -19,9 +19,9 @@ void CameraSystem::onUpdate(float _dt)
             auto& targetTransform = m_registryRef->get<Transform>(camera.target);            
             sf::Vector2f targetedCameraPosition{ targetTransform.position };
 
-            if (camera.offsetFromThePlanet != 0.f && m_registryRef->all_of<InteractableWithPlanet, Player>(camera.target))
+            if (camera.offsetFromThePlanet != 0.f && m_registryRef->all_of<MovableOnPlanet, Player>(camera.target))
             {
-                auto& targetInterWithPlanet = m_registryRef->get<InteractableWithPlanet>(camera.target);
+                auto& targetInterWithPlanet = m_registryRef->get<MovableOnPlanet>(camera.target);
                 auto& planetTransform = m_registryRef->get<Transform>(targetInterWithPlanet.planet);
                 
                 sf::Vector2f direction = normalizedVector(targetTransform.position - planetTransform.position);

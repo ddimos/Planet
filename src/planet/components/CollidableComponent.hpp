@@ -7,4 +7,5 @@ struct Collidable
     float radius = 0.f;
     CollidableType typeFlag = 0;
     CollidableType canColideWithFlags = 0;
+    bool needToResolve = true;
 };

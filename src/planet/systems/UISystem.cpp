@@ -25,6 +25,10 @@ UISystem::UISystem(sf::RenderWindow& _window)
     m_minimapView.setCenter(0.f, 0.f);
     // TODO to take into account resolution (1024, 768)
     
+    m_canTeleportText.setPosition(sf::Vector2f{860.f, 750.f});
+    m_canTeleportText.setCharacterSize(24);
+    m_canTeleportText.setString("Teleport");
+
     m_bulletCooldownText.setPosition(sf::Vector2f{860.f, 800.f});
     m_bulletCooldownText.setCharacterSize(30);
 
@@ -39,6 +43,7 @@ UISystem::UISystem(sf::RenderWindow& _window)
 void UISystem::onInit()
 {
     const auto& font = m_engineRef->getResourceManager().getFont("times_new_roman");
+    m_canTeleportText.setFont(font);
     m_bulletCooldownText.setFont(font);
     m_missileCooldownText.setFont(font);
 }
@@ -53,6 +58,10 @@ void UISystem::onUpdate(float _dt)
     {    
         entt::entity player = m_registryRef->ctx().get<entt::entity>("player"_hs);
         auto& playerComponent = m_registryRef->get<Player>(player);
+
+        if (m_registryRef->valid(playerComponent.canTeleportToPlanet))
+            m_windowRef.draw(m_canTeleportText);
+
         if (playerComponent.bulletCooldownDt <= 0.f)
             m_bulletCooldownText.setString("Fire"); // TODO set it only once
         else

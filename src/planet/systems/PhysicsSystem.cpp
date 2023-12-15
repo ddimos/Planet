@@ -18,7 +18,9 @@ namespace
             entt::entity _B, Collidable& _collidableB, Transform& _transformB, Body* _bodyB);
 
         bool canColide() const;
-        bool isCollide();
+        bool isColliding();
+        bool needToResolve() const;
+
         void resolveCollision();
         void correctPosition();
 
@@ -64,11 +66,16 @@ namespace
             && m_collidableB.canColideWithFlags & m_collidableA.typeFlag;
     }
 
-    bool CollisionPair::isCollide()
+    bool CollisionPair::isColliding()
     {
         // only a circle shape
         return circleVsCircle(*this);
     }
+
+    bool CollisionPair::needToResolve() const
+    {
+        return m_collidableA.needToResolve || m_collidableB.needToResolve;
+    }    
 
     void CollisionPair::resolveCollision()
     {
@@ -109,11 +116,12 @@ namespace
         const float kSlop = 0.05f;
         const float invMassSum = 1.f; // m_A->invMass + m_B->invMass
         sf::Vector2f const correction = (std::max(m_penetration - kSlop, 0.0f) / (invMassSum)) * percent * m_normal;
-
-        if (m_bodyA)
-            m_transformA.position -= correction;//m_A->invMass * correction;
-        if (m_bodyB)
-            m_transformB.position += correction;//A->invMass * correction;
+        
+        const bool correctForBoth = m_collidableA.needToResolve && m_collidableB.needToResolve;
+        if (m_collidableA.needToResolve)
+            m_transformA.position -= correction * ((correctForBoth)?1.f:2.f) ;//m_A->invMass * correction;
+        if (m_collidableB.needToResolve)
+            m_transformB.position += correction* ((correctForBoth)?1.f:2.f);//A->invMass * correction;
     }
 
     bool CollisionPair::needToNotify(const PhysicsSystem::NotificationPairs& _pairs) const
@@ -182,11 +190,14 @@ void PhysicsSystem::onUpdate(float _dt)
             CollisionPair pair(entityA, collidableA, transformA, bodyA, entityB, collidableB, transformB, bodyB);
             if (!pair.canColide())
                 continue;
-            if (!pair.isCollide())
+            if (!pair.isColliding())
                 continue;
 
             if (pair.needToNotify(m_notificationPairs))
                 m_dispatcherRef->trigger<CollisionEvent>({entityA, entityB});
+
+            if (!pair.needToResolve())
+                continue;
 
             collidingPairs.push_back(pair);
         }

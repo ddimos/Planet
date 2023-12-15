@@ -4,6 +4,7 @@
 
 class PlayerShootBulletEvent;
 class PlayerLaunchMissileEvent;
+class InteractionEvent;
 
 class PlayerSystem : public BaseSystem
 {
@@ -16,4 +17,7 @@ private:
 
     void receivePlayerShootBulletEvent(const PlayerShootBulletEvent& _event);
     void receivePlayerLaunchMissileEvent(const PlayerLaunchMissileEvent& _event);
+    void receiveInteractionEvent(const InteractionEvent& _event);
+
+    bool m_wasTeleportButtonPressedPrevFrame = false;
 };

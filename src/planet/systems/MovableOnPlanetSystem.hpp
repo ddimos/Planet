@@ -1,10 +1,10 @@
 #pragma once
 #include "systems/BaseSystem.hpp"
 
-class InteractableWithPlanetSystem : public BaseSystem
+class MovableOnPlanetSystem : public BaseSystem
 {
 public:
-    InteractableWithPlanetSystem() = default;
+    MovableOnPlanetSystem() = default;
 
 private:
     void onUpdate(float _dt) override;
