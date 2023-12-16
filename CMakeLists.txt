@@ -8,7 +8,7 @@ find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 # URL: https://github.com/skypjack/entt.git
 set(USE_LIBCPP OFF)
 set(ENTT_BUILD_TESTING OFF)
-add_subdirectory(src/entt)
+add_subdirectory(external/entt)
 
 file(GLOB_RECURSE TARGET_SRC "./src/planet/*.cpp" )
 
@@ -18,6 +18,6 @@ target_link_libraries(Planet EnTT sfml-graphics sfml-audio sfml-network)
 
 target_include_directories(Planet PUBLIC
                             "${PROJECT_BINARY_DIR}"
-                            "${PROJECT_SOURCE_DIR}/src/entt/src"
+                            "${PROJECT_SOURCE_DIR}/external/entt/src"
                             "${PROJECT_SOURCE_DIR}/src/planet"
                             )
